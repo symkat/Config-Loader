@@ -9,31 +9,46 @@ use Data::Dumper;
 
 my $tests = [
     {
-        name => "ConfigAny Loads File",
+        title => "ConfigAny Loads File",
         put => { 
             file => "/dev/null",
-            sources => [ 'ConfigAny', { file => "t/etc/config" } ],
+            sources => [ 'ConfigAny', { stem => "t/etc/config" } ],
         },
         get => {
             foo => "bar",
             blee => "baz",
             bar => [ "this", "that" ],
         },
+        line    => __LINE__,
     },
     {
-        name => "ConfigAny without file returns {}",
+        title => "ConfigAny without file returns {}",
         put => { },
         get => { },
+        line    => __LINE__,
     },
     {
-        name => "ConfigAny with invalid file returns {}",
-        put => { file => "/invalid/path" },
+        title => "ConfigAny with invalid file returns {}",
+        put => { stem => "/invalid/path" },
         get => { },
+        line    => __LINE__,
     },
 ];
 
 for my $test ( @{ $tests } ) {
-    is_deeply( get_config( %{ $test->{put} } ), $test->{get}); # $test->{name};
+
+    is_deeply( 
+        get_config( %{ $test->{put} }, getopts_argv_key => undef ),
+        $test->{get},
+        sprintf( "Line %d: %s", $test->{line}, $test->{title} ),
+    );
+    
+#    # OO
+#    is_deeply( 
+#        Config::Loader->new_source( 'Layered', $test->{put} )->load_config,
+#        $test->{get},
+#        sprintf( "Line %d: %s", $test->{line}, $test->{title} ),
+#    );
 }
 
 done_testing;

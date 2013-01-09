@@ -12,7 +12,7 @@ my $tests = [
         name => "ConfigAny Loads File",
         line => __LINE__,
         put => { 
-            file => "t/etc/config",
+            stem => "t/etc/config",
         },
         get => {
             foo => "bar",
@@ -29,13 +29,20 @@ my $tests = [
     {
         name => "ConfigAny with invalid file returns {}",
         line => __LINE__,
-        put => { file => "/invalid/path" },
+        put => { stem => "/invalid/path" },
         get => { },
     },
 ];
 
 for my $test ( @{ $tests } ) {
+    # Functional
     is_deeply( get_config( %{ $test->{put} } ), $test->{get},$test->{name}.' from line '.$test->{line} );
+    # OO
+    is_deeply( 
+        Config::Loader->new_source( 'ConfigAny', %{ $test->{put} }  )->load_config,
+        $test->{get},
+        $test->{name}.' from line '.$test->{line} 
+    );
 }
 
 done_testing;

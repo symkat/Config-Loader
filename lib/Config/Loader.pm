@@ -1,7 +1,9 @@
 package Config::Loader;
 use warnings;
 use strict;
+use Module::Runtime qw( use_module );
 
+# Functional Interface.
 sub import {
     my ( $class, $source, $export ) = @_;
     $source ||= "Layered";
@@ -11,12 +13,28 @@ sub import {
     
     no strict 'refs';
     *$target = sub {
-        eval "require Config::Loader::Source::$source";
-        if ( $@ ) {
-            die "Error loading Config::Loader::Source::$source: $@";
-        }
-        return "Config::Loader::Source::$source"->new(@_)->get_config;
+        return $class->new_source( $source, @_ )->get_config;
     };
+}
+
+# OO Interface
+sub _load_source {
+    my ( $class, $source ) = @_;
+
+    if ( substr( $source, 0, 1 ) eq '+' ) {
+        return use_module( substr( $source, 1 ) );
+    }
+    return use_module( "Config::Loader::Source::$source" );
+}
+
+sub new_source {
+    my ( $class, $source, @args ) = @_;
+    if (ref($source) eq 'HASH') {
+        @args = $source;
+        $source = delete $source->{source} || 'Layered';
+    }
+
+    $class->_load_source( $source )->new( @args );
 }
 
 1;

@@ -1,25 +1,43 @@
 package Config::Loader::Source::Getopts;
-use warnings;
-use strict;
-use base 'Config::Loader::Source';
-use Getopt::Long;
+use Moo;
+use Getopt::Long qw( GetOptionsFromArray );
 use Scalar::Util qw( looks_like_number );
-use Devel::Dwarn;
+
+extends 'Config::Loader::Source';
+
+has getopts_argv_key => ( is => 'rw', default => sub { "argv" } );
+has getopts_hash_key => ( is => 'rw' );
+has getopts_config   => ( is => 'ro' );
+has config           => ( is => 'lazy');
 
 sub load_config {
     my ( $self ) = @_;
     
-    # We have two modes of operation.  In one, we just run
-    # GetOptions with the configurtion data structure that
-    # the user gives us.  In the other we analyise the
-    # inital data structure, and create a configuration
-    # based on that.
+    return {} unless $self->config;
 
-    return GetOptions( \{}, @{ $self->args->{GetOptions} } )
-        if $self->args->{GetOptions};
+    my @copy = @ARGV;
+    
+    GetOptionsFromArray( \@copy, \my %config, @{ $self->config } );
 
-    return {} unless ref $self->default; # No data structure to use.
+    my %final = ( 
+        $self->getopts_hash_key 
+            ? ( $self->getopts_hash_key => { %config } )
+            : %config
+    );
+    
+    if ( @copy and my $key = $self->getopts_argv_key ) { 
+        $final{$key} = \@copy; 
+    }
 
+    return { %final };
+}
+
+sub _build_config {
+    my ( $self ) = @_;
+
+    return $self->getopts_config if $self->getopts_config;
+    return undef unless $self->default;
+    
     my @want;
 
     for my $key ( keys %{ $self->default } ) {
@@ -33,10 +51,8 @@ sub load_config {
             push @want, "$key=s";
         }
     }
-   
-    my %config;
-    GetOptions( \%config, @want );
-    return { %config };
+    
+    return [ @want ];
 }
 
 # TODO: Boolean detection has a bug in it.  If we use
