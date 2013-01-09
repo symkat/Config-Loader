@@ -27,6 +27,7 @@ has config_any_driver_args => (
 
 has layered_sources => ( is => 'lazy' );
 has layered_args    => ( is => 'lazy' );
+has has_files       => ( is => 'lazy' );
 
 sub load_config {
     my ( $self ) = @_;
@@ -40,7 +41,7 @@ sub load_config {
     #   stems - "
     #   config_any_{option}
 
-    return {} unless $self->file or $self->stem;
+    return {} unless $self->has_files;
 
     # When someone doesn't use a single stem or file,
     # we go into DWIM mode and call on the power of 
@@ -93,6 +94,16 @@ sub do_what_i_mean {
     return 1 if $self->stem && $self->file;
     return 1 if $self->stems;
     return 1 if $self->files;
+    return 0;
+}
+
+sub _build_has_files {
+    my ( $self ) = @_;
+
+    return 1 if $self->file;
+    return 1 if $self->stem;
+    return 1 if $self->files;
+    return 1 if $self->stems;
     return 0;
 }
 
