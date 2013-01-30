@@ -1,0 +1,7 @@
+
+    if ( substr( $package, 0, 1 ) eq '+' ) {
+        return use_module( substr( $package, 1 ) );
+    } else {
+        return use_module( "Config::Loader::Source::$package" );
+    }
+}

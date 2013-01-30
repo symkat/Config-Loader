@@ -1,0 +1,60 @@
+package Config::Loader::SourceRole::Filter;
+
+use Moo::Role;
+
+requires 'filter_config';
+
+has from => (is => 'rwp');
+
+sub BUILD { }
+
+after BUILD => sub {
+  my ($self, $args) = @_;
+  unless ($self->from) {
+    $self->_set_from(Config::Loader->new_source($args));
+  }
+};
+
+sub get_config {
+  my ($self) = @_;
+  return $self->filter_config($self->from->get_config);
+}
+
+1;
+
+package Config::Loader::Source::Filter::ExpandHash;
+
+use Moo;
+use Template::ExpandHash;
+
+with 'Config::Loader::SourceRole::Filter';
+
+sub filter_config { expand_hash($_[1]) }
+
+1;
+
+package Config::Loader::Source::Filtered;
+
+has _original_source => (is => 'rwp');
+
+has _final_source => (is => 'lazy');
+
+sub _build__final_source {
+  my ($self) = @_;
+  my @filter_configs = $self->normalized_filter_configs;
+  my $source = $self->_original_source;
+  foreach my $filter_config (@filter_configs) {
+    $source = Config::Loader->new_source({ %$filter_config, from => $source });
+  }
+  return $source;
+}
+
+sub get_config { shift->_final_source->get_config }
+
+1;
+
+package MyApp;
+
+use Config::Loader;
+
+get_config({ sources => [ <config for Layered> ], filters => [ 'ExpandHash' ] });

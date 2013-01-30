@@ -1,0 +1,2 @@
+env: prod
+secret_key: foobar

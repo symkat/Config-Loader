@@ -1,0 +1,22 @@
+
+has config => (is => 'lazy');
+
+sub _build_config { $self->_config_loader->get_config }
+
+has _config_loader => (is => 'lazy');
+
+sub _build__config_loader {
+  my ($self) = @_;
+  return Config::Loader->new_source(...);
+}
+
+...
+
+around _build__config_loader => sub {
+  my ($orig, $self) = (shift, shift);
+  my $source = $self->$orig;
+  Config::Loader->new_source(
+    'Filter::ExpandHash',
+    from => $source
+  );
+};
