@@ -2,6 +2,10 @@ package Config::Loader;
 use warnings;
 use strict;
 use Module::Runtime qw( use_module );
+use 5.008008;
+
+our $VERSION = "0.001000";
+$VERSION = eval $VERSION;
 
 # Functional Interface.
 sub import {
@@ -202,6 +206,8 @@ Copyright (c) 2012 the Config::Loader L</AUTHOR>, L</CONTRIBUTORS>, and
 L</SPONSORS> as listed above.
 
 =head1 LICENSE
+
+This library is free software and may be distributed under the same terms as perl itself.
 
 =head1 AVAILABILITY
 
