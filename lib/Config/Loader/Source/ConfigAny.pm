@@ -2,7 +2,6 @@ package Config::Loader::Source::ConfigAny;
 use Moo;
 extends 'Config::Loader::Source';
 use Config::Any;
-use Devel::Dwarn;
 
 has file   => ( is => 'ro' );
 has stem   => ( is => 'ro' );

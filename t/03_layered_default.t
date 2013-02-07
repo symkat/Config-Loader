@@ -3,7 +3,6 @@ use warnings;
 use strict;
 use Config::Loader;
 use Test::More;
-use Devel::Dwarn;
 
 my $tests = [
     {

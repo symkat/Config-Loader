@@ -3,7 +3,6 @@ use Moo;
 extends 'Config::Loader::Source';
 use Template::ExpandHash qw( expand_hash );
 use Storable qw( dclone );
-use Devel::Dwarn;
 
 has normalized_sources => (is => 'lazy');
 has process_template   => (is => 'ro', default => sub { 1 } );
