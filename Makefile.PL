@@ -8,11 +8,15 @@ license        'perl';
 # uses Module::Install::Repository
 auto_set_repository;
 
-# Specific dependencies
-requires        'Config::Any'   => '0';
-requires        'Moo'           => '0';
-requires        'YAML'          => '0';
+# General Core Requirements
+requires        'Moo'                   => '0';
 
+# Loaders, Filters, etc
+requires        'Config::Any'           => '0';
+requires        'YAML'                  => '0';
+requires        'Template::ExpandHash'  => '0';
+
+# For Tests
 test_requires  'Test::More'     => '0.42';
 
 WriteAll;
