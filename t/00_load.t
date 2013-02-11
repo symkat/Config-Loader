@@ -10,11 +10,11 @@ use_ok $_ for (
         Template::ExpandHash
         
         Config::Loader
-        Config::Loader::Source
         Config::Loader::Source::ENV
-        Config::Loader::Source::ConfigAny
+        Config::Loader::Source::File
         Config::Loader::Source::Getopts
-        Config::Loader::Source::Layered
+        Config::Loader::Source::Merged
+        Config::Loader::Source::Profile::Default
     )
 );
 

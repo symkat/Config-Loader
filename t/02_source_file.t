@@ -2,14 +2,14 @@
 use warnings;
 use strict;
 use Test::More;
-use Config::Loader qw( ConfigAny );
+use Config::Loader qw( File );
 
 use Data::Dumper;
 
 
 my $tests = [
     {
-        name => "ConfigAny Loads File",
+        name => "File Loads File",
         line => __LINE__,
         put => { 
             stem => "t/etc/config",
@@ -21,13 +21,13 @@ my $tests = [
         },
     },
     {
-        name => "ConfigAny without file returns {}",
+        name => "File without file returns {}",
         line => __LINE__,
         put => { },
         get => { },
     },
     {
-        name => "ConfigAny with invalid file returns {}",
+        name => "File with invalid file returns {}",
         line => __LINE__,
         put => { stem => "/invalid/path" },
         get => { },
@@ -39,7 +39,7 @@ for my $test ( @{ $tests } ) {
     is_deeply( get_config( %{ $test->{put} } ), $test->{get},$test->{name}.' from line '.$test->{line} );
     # OO
     is_deeply( 
-        Config::Loader->new_source( 'ConfigAny', %{ $test->{put} }  )->load_config,
+        Config::Loader->new_source( 'File', %{ $test->{put} }  )->load_config,
         $test->{get},
         $test->{name}.' from line '.$test->{line} 
     );

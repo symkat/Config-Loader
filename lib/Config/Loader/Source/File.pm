@@ -1,7 +1,11 @@
-package Config::Loader::Source::ConfigAny;
-use Moo;
-extends 'Config::Loader::Source';
+package Config::Loader::Source::File;
+
 use Config::Any;
+use Moo;
+
+with 'Config::Loader::SourceRole::OneArgNew';
+
+sub one_arg_name { 'file' }
 
 has file   => ( is => 'ro' );
 has stem   => ( is => 'ro' );

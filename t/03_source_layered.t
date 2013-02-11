@@ -9,10 +9,9 @@ use Data::Dumper;
 
 my $tests = [
     {
-        title => "ConfigAny Loads File",
+        title => "File Loads File",
         put => { 
-            file => "/dev/null",
-            sources => [ 'ConfigAny', { stem => "t/etc/config" } ],
+            sources => [ [ 'File', { stem => "t/etc/config" } ] ],
         },
         get => {
             foo => "bar",
@@ -22,14 +21,14 @@ my $tests = [
         line    => __LINE__,
     },
     {
-        title => "ConfigAny without file returns {}",
+        title => "File without file returns {}",
         put => { },
         get => { },
         line    => __LINE__,
     },
     {
-        title => "ConfigAny with invalid file returns {}",
-        put => { stem => "/invalid/path" },
+        title => "File with invalid file returns {}",
+        put => { File => { stem => "/invalid/path" } },
         get => { },
         line    => __LINE__,
     },

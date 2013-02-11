@@ -11,9 +11,6 @@ my $tests = [
         line    => __LINE__,
         env     => {  },
         put => { 
-            default => { 
-            
-            }, 
             env_search      => [qw()],
             env_prefix      => "",
             env_postfix     => "",
@@ -24,31 +21,10 @@ my $tests = [
         source => "ENV",
     },
     {
-        title   => "Generated Search",
-        line    => __LINE__,
-        env     => { CONFIG_FOO => "baz", CONFIG_BLEE => "foo" },
-        put => { 
-            default => { 
-                foo     => "bar",
-                blee    => "baz",
-            }, 
-            env_search  => [qw()],
-        },
-        get => {
-            foo => "baz",
-            blee => "foo",
-        
-        },
-        source => "ENV",
-    },
-    {
         title   => "Search with env_search",
         line    => __LINE__,
         env     => { CONFIG_FOO => "baz", CONFIG_BLEE => "foo" },
         put => { 
-            default => { 
-            
-            }, 
             env_search      => [qw( foo blee )],
         },
         get => {
@@ -64,9 +40,6 @@ my $tests = [
         env     => {  },
         env     => { FOO_THING => "random", BLEE_THING => "modnar" },
         put => { 
-            default => { 
-            
-            }, 
             env_search      => [qw( foo blee )],
             env_prefix      => undef,
             env_postfix     => "THING",
@@ -83,9 +56,6 @@ my $tests = [
         env     => {  },
         env     => { THAT_FOO => "world", THAT_BLEE => "hello" },
         put => { 
-            default => { 
-            
-            }, 
             env_search      => [qw( foo blee)],
             env_prefix      => "THAT",
             env_postfix     => undef,
@@ -102,9 +72,6 @@ my $tests = [
         env     => {  },
         env     => { THAT_FOO_THING => "hello", THAT_BLEE_THING => "world" },
         put => { 
-            default => { 
-            
-            }, 
             env_search      => [qw( foo blee )],
             env_prefix      => "THAT",
             env_postfix     => "THING",
@@ -132,7 +99,7 @@ for my $test ( @{ $tests } ) {
 
     # OO
     is_deeply(
-        Config::Loader->new_source( $test->{put} )->get_config, 
+        Config::Loader->new_source( 'ENV', $test->{put} )->load_config, 
         $test->{get}, 
         sprintf( "Line %d/OO: %s", $test->{line}, $test->{title})
     );

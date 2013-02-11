@@ -3,11 +3,10 @@ use Moo;
 use Getopt::Long qw( GetOptionsFromArray );
 use Scalar::Util qw( looks_like_number );
 
-extends 'Config::Loader::Source';
-
 has getopts_argv_key => ( is => 'rw', default => sub { "argv" } );
 has getopts_hash_key => ( is => 'rw' );
 has getopts_config   => ( is => 'ro' );
+has default          => ( is => 'ro' );
 has config           => ( is => 'lazy');
 
 sub load_config {

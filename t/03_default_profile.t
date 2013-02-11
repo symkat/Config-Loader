@@ -149,17 +149,19 @@ for my $test ( @$tests ) {
 
     # This test will set the defaults for ENV... and expect them to
     # be filled fro $ENV.
+
+    my %args = (
+        default => $test->{put},
+        sources => [ 'ENV', 'Getopts' ],
+        getopts_hash_key => undef,
+    );
     
     # OO
     is_deeply( 
         Config::Loader->new_source( 
-            'Layered',
-            {
-                default => { map { $_ => "" } keys %{$test->{put}} }, 
-                sources => [ 'ENV', 'Getopts' ],
-                getopts_hash_key => undef,
-            }
-        )->get_config,
+            'Profile::Default',
+            %args,
+        )->load_config,
         $test->{get},
         sprintf( "Line %d/OO: %s", $test->{line}, $test->{title} ),
     );
@@ -169,11 +171,7 @@ for my $test ( @$tests ) {
 
     # Functional
     is_deeply( 
-        get_config(
-            default => { map { $_ => "" } keys %{$test->{put}} }, 
-            sources => [ 'ENV', 'Getopts' ],
-            getopts_hash_key => undef,
-        ), 
+        get_config(%args),
         $test->{get}, 
         sprintf( "Line %d/F: %s", $test->{line}, $test->{title} ),
     );

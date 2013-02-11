@@ -9,15 +9,22 @@ $VERSION = eval $VERSION;
 
 # Functional Interface.
 sub import {
-    my ( $class, $source, $export ) = @_;
-    $source ||= "Layered";
+    my ( $class, $default_source, $export ) = @_;
+    $default_source ||= "Profile::Default";
     $export ||= "get_config";
 
-    my $target = caller . "::" . $export;
+    my $target = caller() . "::" . $export;
     
     no strict 'refs';
     *$target = sub {
-        return $class->new_source( $source, @_ )->get_config;
+        my @args = @_;
+        my $source;
+        if (ref($args[0]) eq 'HASH') {
+            $args[0] = { %{ $args[0] } };
+            $source = delete $args[0]->{source};
+        }
+        $source ||= $default_source;
+        return $class->new_source( $source, @args )->load_config;
     };
 }
 
@@ -33,10 +40,6 @@ sub _load_source {
 
 sub new_source {
     my ( $class, $source, @args ) = @_;
-    if (ref($source) eq 'HASH') {
-        @args = $source;
-        $source = delete $source->{source} || 'Layered';
-    }
 
     $class->_load_source( $source )->new( @args );
 }

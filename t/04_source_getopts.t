@@ -241,7 +241,7 @@ for my $test ( @{ $tests } ) {
 
     # OO
     is_deeply(
-        Config::Loader->new_source( $test->{put} )->get_config, 
+        Config::Loader->new_source( 'Getopts', $test->{put} )->load_config, 
         $test->{get}, 
         sprintf( "Line %d/OO: %s", $test->{line}, $test->{title})
     );
