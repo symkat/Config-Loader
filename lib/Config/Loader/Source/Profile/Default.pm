@@ -24,18 +24,17 @@ sub _default_sources {
 
 sub _build_loader {
     my ($self) = @_;
-    my @sources = (
-        $self->_new_source([ 'Static', { config => $self->default } ]),
-        (map $self->_new_source($_), @{$self->sources}),
-    );
     my $merged = Config::Loader->new_source('Merged', {
-        sources => \@sources
+        sources => [ map $self->_apply_overrides($_), @{$self->sources} ],
+        default => $self->default,
     });
     return $merged unless $self->process_template;
-    return $self->_new_source([ 'Filter::ExpandHash', { source => $merged } ]);
+    return Config::Loader->new_source(
+      'Filter::ExpandHash', { source => $merged }
+    );
 }
 
-sub _new_source {
+sub _apply_overrides {
     my ( $self, $config ) = @_;
     my ( $type, $args ) = do {
         if (ref($config) eq 'ARRAY') {
@@ -44,8 +43,7 @@ sub _new_source {
             ($config, {});
         }
     };
-    $args = { default => $self->default, %$args };
-    return Config::Loader->new_source($type, $self->overrides->{$type}||$args);
+    return [ $type, $self->overrides->{$type}||$args ];
 }
 
 1;
