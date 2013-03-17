@@ -11,7 +11,7 @@ my $tests = [
     {
         title => "File Loads File",
         put => { 
-            sources => [ [ 'File', { stem => "t/etc/config" } ] ],
+            sources => [ [ 'File', { file => "t/etc/config" } ] ],
         },
         get => {
             foo => "bar",
@@ -28,7 +28,7 @@ my $tests = [
     },
     {
         title => "File with invalid file returns {}",
-        put => { File => { stem => "/invalid/path" } },
+        put => { File => { file => "/invalid/path" } },
         get => { },
         line    => __LINE__,
     },

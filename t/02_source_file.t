@@ -12,7 +12,7 @@ my $tests = [
         name => "File Loads File",
         line => __LINE__,
         put => { 
-            stem => "t/etc/config",
+            file => "t/etc/config",
         },
         get => {
             foo => "bar",
@@ -21,15 +21,9 @@ my $tests = [
         },
     },
     {
-        name => "File without file returns {}",
-        line => __LINE__,
-        put => { },
-        get => { },
-    },
-    {
         name => "File with invalid file returns {}",
         line => __LINE__,
-        put => { stem => "/invalid/path" },
+        put => { file => "/invalid/path" },
         get => { },
     },
 ];

@@ -19,7 +19,7 @@ sub BUILD {
 }
 
 sub _default_sources {
-    return [ [ 'File', {} ], [ 'ENV', {} ], [ 'Getopts', {} ] ];
+    return [ [ 'File', undef ], [ 'ENV', {} ], [ 'Getopts', {} ] ];
 }
 
 sub _build_loader {
@@ -43,6 +43,8 @@ sub _apply_overrides {
             ($config, {});
         }
     };
+    # skip unconfigured sources
+    return () unless $args or exists $self->overrides->{$type};
     return [ $type, $self->overrides->{$type}||$args ];
 }
 
